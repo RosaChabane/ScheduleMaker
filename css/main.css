@@ -1,0 +1,184 @@
+/*
+APPLY FONTS TO ENTIRE APP
+*/
+
+html {
+    font-family: 'Poppins', sans-serif;
+}
+
+/*
+NAV BAR (employee button/timeslip button/trash can icon)
+*/
+
+.topNavBar {
+    padding: 2%;
+}
+
+.topNavBar {
+    display: flex;
+    justify-content: space-between;
+    padding-top: 1%;
+}
+
+/*
+ADD EMPLOYEE BUTTON
+*/
+
+.addEmployeeButton {
+    color: gray;
+}
+
+
+/*
+ENTIRE CONTAINER (everything exclduing nav bar)
+*/
+
+.entireContainer {
+    display: flex;
+    padding: 0 2% 0 2%;
+}
+
+
+/*
+EMPLOYEE CONTAINER
+*/
+
+.employeeBlockContainer {
+    border: 1px solid black;
+    height: 800px;
+    width: 15%;
+    overflow: scroll;
+}
+
+/* EMPLOYEE SLOT TOGGLE*/
+
+.employeeSlotToggle {
+    border-bottom: 1px solid black;
+    width: 100%;
+    height: 8%;
+    text-align: center;
+    cursor: pointer;
+}
+
+.employeeSlotToggle:hover {
+    background-color: lightgray;
+}
+
+.employeeSlotToggle span {
+    font-size: 2em;
+    line-height: 1.8;
+}
+
+.newEmployee {
+    border-bottom: 1px solid black;
+    width: 100%;
+    height: 8%;
+    text-align: center;
+    cursor: pointer;
+}
+
+.newEmployee:hover {
+    background-color: lightgray;
+}
+
+.newEmployee span {
+    font-size: 2em;
+    line-height: 1.8;
+}
+
+
+/*
+EMPLOYEE INFO CARD
+*/
+
+.employeeEditCard {
+    display: none;
+}
+
+.employeeEditCardActive {
+    background-color: rgba(243, 237, 125, 0.8);
+    height: 300px;
+    width: 100%;
+    padding-top: 5%;
+    display: block;
+}
+
+.employeeEditCardActive > div {
+    padding: 7%;
+}
+
+.employeeEditCardActive span {
+    float: left;
+    clear: both;
+}
+
+.employeeEditCardActive span + div {
+    float: right;
+}
+
+/*
+WORK WEEK (right side calendar)
+*/
+
+.workWeekContainer {
+    height: 800px;
+    width: 85%;
+    padding-left: 1%;
+}
+
+/*
+SCHEDULE TABLE (all employee slots and hp1/hp2 headers, and delete trash can icon)
+*/
+
+table * {
+    height: 87.9px;
+    width: 1%;
+    border: 1px solid black;
+    text-align: center;
+    vertical-align: middle;
+    font-weight: 400;
+    font-size: 25px;
+}
+
+.trashCan img {
+    padding-top: 1.5%;
+    border: hidden;
+    height: 75px;
+    width: 80px;
+}
+
+.trashCan {
+    border: hidden;
+    height: 100%;
+    width: 100%;
+    background-color: rgb(233, 233, 233);
+    text-align: center;
+}
+
+.hp1, .hp1Left{
+    background-color: rgb(178, 231, 248);
+}
+
+.hp2, .hp2Left {
+    background-color: rgb(250, 184, 129);
+}
+
+.hp1Left, .hp2Left {
+    border-left: hidden;
+}
+
+td .employeeSlotToggle {
+    height: 100%;
+    border: none;
+}
+
+td .employeeSlotToggle span {
+    border: none;
+    font-weight: 300;
+    font-size: 40px;
+    line-height: 2.0;
+}
+
+.droppedEmployee {
+    line-height: 3.0;
+}

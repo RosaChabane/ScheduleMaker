@@ -1,0 +1,9 @@
+html {
+    font-family: 'Poppins', sans-serif;
+}
+
+.entireContainer {
+    display: flex;
+    flex-direction: column;
+}
+
