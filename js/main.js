@@ -6,7 +6,7 @@ class Employee {
 }
 
 class EmployeeManager {
-  constructor() {
+  constructor() { 
     this.employees = [];
     this.counter = 1;
   }
@@ -82,6 +82,10 @@ class EmployeeManager {
       this.employees.forEach(employee => {
         const employeeElement = document.getElementById(employee.id);
         employeeElement.querySelector('.employeeName').innerText = `${employee.name[0].toUpperCase()}${employee.name.slice(1)}`;
+
+        employeeElement.addEventListener('dragstart', (e) => {
+          e.dataTransfer.setData('text/plain', e.target.id);
+        });
       });
     }
   }
@@ -111,6 +115,8 @@ weekDaysSlots.forEach(slot => {
   slot.addEventListener('drop', (e) => {
     e.preventDefault();
 
+    const loadedEmployees = localStorage.getItem('employeesData');
+
     const employeeId = e.dataTransfer.getData('text/plain');
     const employeeElement = document.getElementById(employeeId);
 
@@ -134,9 +140,8 @@ weekDaysSlots.forEach(slot => {
       slot.addEventListener('dragend', (e) => {
         newEmployeeElement.remove();
       });
-    }
+    } 
   });
 });
-
 
 //CAN STORE THE ENTIRE WEEK/CALENADR CONTAINER INTO LOCAL STORAGE TO SAVE DROPPED EMPLOYEES
