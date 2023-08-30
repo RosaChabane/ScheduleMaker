@@ -11,19 +11,6 @@ class EmployeeManager {
     this.counter = 1;
   }
 
-  setupEmployeeEventListeners() {
-    const employeeContainer = document.querySelector('.employeeBlockContainer');
-
-    employeeContainer.addEventListener('click', (e) => {
-      const target = e.target;
-      if (target.classList.contains('employeeSlotToggle')) {
-        const employeeEditCardClone = document.querySelector('.employeeEditCard').cloneNode(true);
-        target.after(employeeEditCardClone);
-        employeeEditCardClone.classList.toggle("employeeEditCardActive");
-      }
-    });
-  }
-
   createEmployee(employeeElement) {
     let employee = prompt("Enter employee Name:");
 
@@ -40,6 +27,11 @@ class EmployeeManager {
 
       employeeElement.addEventListener('dragstart', (e) => {
         e.dataTransfer.setData('text/plain', e.target.id);
+      });
+
+      employeeElement.addEventListener('click', (e) => {
+        let choice = confirm("Delete employee?");
+        choice ? console.log("deleted") : console.log("cancelled");
       });
     }
   }
@@ -68,6 +60,10 @@ class EmployeeManager {
     const currentCounter = localStorage.getItem('counter');
     this.counter += currentCounter;
 
+
+    // console.log(localStorage.getItem('employeeSlotsHTML'));
+
+
     const employeesJSON = localStorage.getItem('employeesData');
     const loadedEmployees = JSON.parse(employeesJSON);
 
@@ -86,14 +82,24 @@ class EmployeeManager {
         employeeElement.addEventListener('dragstart', (e) => {
           e.dataTransfer.setData('text/plain', e.target.id);
         });
+
+        employeeElement.addEventListener('click', (e) => {
+          const choice = confirm("Delete employee?");
+          if (choice) {
+            const index = this.employees.findIndex(emp => emp.id === employee.id)
+            if (index !== -1) {
+              this.employees.splice(index, 1);
+              this.saveEmployeeData();
+              employeeElement.remove();
+            }
+          }
+        });
       });
     }
   }
 }
 
 const employeeManager = new EmployeeManager();
-
-employeeManager.setupEmployeeEventListeners();
 
 const employeeButton = document.querySelector('.addEmployeeButton').addEventListener('click', () => {
   employeeManager.addEmployee();
@@ -145,3 +151,14 @@ weekDaysSlots.forEach(slot => {
 });
 
 //CAN STORE THE ENTIRE WEEK/CALENADR CONTAINER INTO LOCAL STORAGE TO SAVE DROPPED EMPLOYEES
+
+// FIX BUG: IF EMPLOYEE PROMPT IS EMPTY, DO NOT ADD EMPLOYEE if employee === null??
+
+//NEED TO UPDATE:
+
+// DO NOT LET DRAGGABLE ELEMENTS DRAG PAST OUTSIDE OF CALENDAR/EMPLOYEE CONTAINER 
+
+// MOVE TRASH CAN TO BOTTOM SCREEN AND WHEN EMPLOYEE ELEMENT IS DRAGGED INTO IT, EMPLOYEE DELETES FROM LOCAL STORAGE
+
+// SAVED DROPPED EMPLOYEE ELEMENTS INSIDE OF WEEKDAYSLOTS INTO LOCAL STORAGE
+
