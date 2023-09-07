@@ -9,6 +9,7 @@ class EmployeeManager {
   constructor() { 
     this.employees = [];
     this.counter = 1;
+    this.employeeSlotsHTMLArray = JSON.parse(localStorage.getItem('employeeSlotsHTML')) || [];
   }
 
   createEmployee(employeeElement) {
@@ -23,17 +24,26 @@ class EmployeeManager {
       const newEmployee = new Employee(employeeElement.id, employee);
       this.employees.push(newEmployee);
 
+      this.employeeSlotsHTMLArray.push(employeeElement.outerHTML);
+
       this.saveEmployeeData();
 
       employeeElement.addEventListener('dragstart', (e) => {
         e.dataTransfer.setData('text/plain', e.target.id);
       });
-
-      employeeElement.addEventListener('click', (e) => {
-        let choice = confirm("Delete employee?");
-        choice ? console.log("deleted") : console.log("cancelled");
-      });
     }
+    employeeElement.addEventListener('click', () => {
+      const choice = confirm("Delete employee?");
+      if (choice) {
+        const index = this.employees.findIndex(emp => emp.id === employeeElement.id);
+        if (index !== -1) {
+          this.employees.splice(index, 1);
+          this.employeeSlotsHTMLArray.splice(index, 1);
+          this.saveEmployeeData();
+          employeeElement.remove();
+        }
+      }
+    });
   }
 
   addEmployee() {
@@ -50,19 +60,15 @@ class EmployeeManager {
     const employeesJSON = JSON.stringify(this.employees);
     localStorage.setItem('employeesData', employeesJSON);
 
-    const employeeSlotsHTML = document.querySelector('.employeeBlockContainer').innerHTML;
-    localStorage.setItem('employeeSlotsHTML', employeeSlotsHTML);
-
     localStorage.setItem('counter', this.counter);
+
+    const employeeSlotsHTMLArray = JSON.stringify(this.employeeSlotsHTMLArray);
+    localStorage.setItem('employeeSlotsHTML', employeeSlotsHTMLArray);
   }
 
   loadEmployeeData() {
     const currentCounter = localStorage.getItem('counter');
     this.counter += currentCounter;
-
-
-    // console.log(localStorage.getItem('employeeSlotsHTML'));
-
 
     const employeesJSON = localStorage.getItem('employeesData');
     const loadedEmployees = JSON.parse(employeesJSON);
@@ -72,7 +78,10 @@ class EmployeeManager {
         return new Employee(loadedEmployee.id, loadedEmployee.name);
       });
 
-      const employeeSlotsHTML = localStorage.getItem('employeeSlotsHTML');
+      const employeeSlotsHTMLArray = JSON.parse(localStorage.getItem('employeeSlotsHTML'));
+      console.log(employeeSlotsHTMLArray);
+      const employeeSlotsHTML = employeeSlotsHTMLArray.join('');
+      console.log(employeeSlotsHTML);
       document.querySelector('.employeeBlockContainer').innerHTML = employeeSlotsHTML;
 
       this.employees.forEach(employee => {
@@ -83,12 +92,13 @@ class EmployeeManager {
           e.dataTransfer.setData('text/plain', e.target.id);
         });
 
-        employeeElement.addEventListener('click', (e) => {
+        employeeElement.addEventListener('click', () => {
           const choice = confirm("Delete employee?");
           if (choice) {
             const index = this.employees.findIndex(emp => emp.id === employee.id)
             if (index !== -1) {
               this.employees.splice(index, 1);
+              this.employeeSlotsHTMLArray.splice(index, 1);
               this.saveEmployeeData();
               employeeElement.remove();
             }
@@ -105,8 +115,7 @@ const employeeButton = document.querySelector('.addEmployeeButton').addEventList
   employeeManager.addEmployee();
 });
 
-const trash = document.querySelector('.trashCan');
-let weekDaysSlots = document.querySelectorAll('.weekDaySlot');
+const weekDaysSlots = document.querySelectorAll('.weekDaySlot');
 
 // Load employee data from localStorage when the page loads
 window.addEventListener('load', () => {
@@ -157,8 +166,6 @@ weekDaysSlots.forEach(slot => {
 //NEED TO UPDATE:
 
 // DO NOT LET DRAGGABLE ELEMENTS DRAG PAST OUTSIDE OF CALENDAR/EMPLOYEE CONTAINER 
-
-// MOVE TRASH CAN TO BOTTOM SCREEN AND WHEN EMPLOYEE ELEMENT IS DRAGGED INTO IT, EMPLOYEE DELETES FROM LOCAL STORAGE
 
 // SAVED DROPPED EMPLOYEE ELEMENTS INSIDE OF WEEKDAYSLOTS INTO LOCAL STORAGE
 

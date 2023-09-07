@@ -172,6 +172,10 @@ table * {
     font-weight: 500;
 }
 
+#extraInfo {
+    color: rgba(149, 21, 21, 0.8);
+}
+
 .hp1, .hp1Left{
     background-color: rgb(178, 231, 248);
 }
