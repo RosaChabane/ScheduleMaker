@@ -5,5 +5,17 @@ html {
 .entireContainer {
     display: flex;
     flex-direction: column;
+    justify-content: space-evenly;
+    height: 700px;
+    width: 900px;
+    text-align: center;
+    margin: auto;
 }
 
+.weekday {
+    display: flex;
+    flex-direction: column;
+    height: 50%;
+    width: 13%;
+    margin: auto;
+}
