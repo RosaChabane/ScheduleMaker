@@ -114,14 +114,9 @@ class EmployeeManager {
     if (shiftSlotsStoredData) {
       shiftSlotsStoredData.forEach(el => {
 
-        // console.log('EL: ', el);
-        // console.log(el.Id);
-        // console.log(slot);
-
         const parser = new DOMParser().parseFromString(el.newEmployeeElement, 'text/html');
 
         const parsedNewEmployeeEl = parser.firstChild.innerHTML;
-        // console.log('parsedNewEmployeeEl: ', parsedNewEmployeeEl);
 
         const slot = document.getElementById(el.Id);
 
@@ -129,9 +124,7 @@ class EmployeeManager {
         slot.classList.add('droppedEmployee');
 
         slot.addEventListener('dragend', () => {
-          const index = shiftSlotsStoredData.findIndex(item => item.outerHTML === slot.newEmployeeElement);
-          console.log(shiftSlotsStoredData);
-          console.log(index);
+          const index = shiftSlotsStoredData.findIndex(item => item.Id === slot.id);
 
           if (index !== -1) {
             shiftSlotsHTMLArray.splice(index, 1);
@@ -162,7 +155,7 @@ class EmployeeManager {
         employeeElement.addEventListener('dragstart', (e) => {
           e.dataTransfer.setData('text/plain', e.target.id);
         });
-
+        // Delete employee
         employeeElement.addEventListener('click', () => {
           const choice = confirm("Delete employee?");
 
@@ -204,7 +197,6 @@ class ShiftSlotManager {
 
     shiftSlotsHTMLArray.push(slotAndEmployee);
     localStorage.setItem('shiftSlotsHTMLArray', JSON.stringify(shiftSlotsHTMLArray));
-    
   }
 }
 
@@ -215,6 +207,17 @@ const employeeManager = new EmployeeManager();
 const employeeButton = document.querySelector('.addEmployeeButton').addEventListener('click', () => {
   employeeManager.addEmployee();
 });
+
+
+// Clear schedule button event listener
+const clearButton = document.querySelector('.clearButton').addEventListener('click', () => {
+  const choice = confirm("would you like to clear schedule?");
+  if (choice) {
+    localStorage.removeItem('shiftSlotsHTMLArray');
+    location.reload();
+  }
+});
+
 
 // Load employee data from localStorage when the page loads
 window.addEventListener('load', () => {
@@ -247,6 +250,7 @@ weekDaysSlots.forEach(slot => {
 
       const dataSlot = new ShiftSlotManager(slot.target, slot.id, slot, newEmployeeElement);
       dataSlot.handleDrop();
+      location.reload();
 
       newEmployeeElement.addEventListener('dragstart', (e) => {
         e.dataTransfer.setData('text/plain', e.target.id);
