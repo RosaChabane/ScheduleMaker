@@ -15,10 +15,14 @@ class EmployeeManager {
   createEmployee(employeeElement) {
     let employee = prompt("Enter employee Name:");
 
+    if (employee === null || employee.length === 0) {
+      location.reload();
+    }
+    
     if (employee) {
       employeeElement.querySelector('.employeeName').innerText = `${employee[0].toUpperCase()}${employee.slice(1)}`;
       employeeElement.draggable = true;
-      employeeElement.id = 'employee_' + this.counter; // Assign a unique ID
+      employeeElement.id = 'employee_' + this.counter;
       this.counter++;
 
       const newEmployee = new Employee(employeeElement.id, employee);
@@ -57,7 +61,7 @@ class EmployeeManager {
 
   loadEmployeeData() {
     const currentCounter = localStorage.getItem('counter');
-    this.counter += currentCounter;
+    this.counter += Number(currentCounter);
 
     const employeesJSON = localStorage.getItem('employeesData');
     const loadedEmployees = JSON.parse(employeesJSON);
@@ -81,28 +85,66 @@ class EmployeeManager {
     document.getElementById('pmShiftHP2').innerHTML = pmShiftHP2;
 
     if (!dateText) {
-      document.getElementById('dateOfWeek').innerHTML = "click to edit"
+      document.getElementById('dateOfWeek').innerHTML = "click to add date"
     }
 
     if (!infoText) {
-      document.getElementById('extraInfo').innerHTML = "click to edit";
+      document.getElementById('extraInfo').innerHTML = "click to add note";
     }
     
     if (!amShiftHP1) {
-      document.getElementById('amShiftHP1').innerHTML = "click to edit"
+      document.getElementById('amShiftHP1').innerHTML = "add shift start"
     }
 
     if (!pmShiftHP1) {
-      document.getElementById('pmShiftHP1').innerHTML = "click to edit"
+      document.getElementById('pmShiftHP1').innerHTML = "add shift end"
     }
 
     if (!amShiftHP2) {
-      document.getElementById('amShiftHP2').innerHTML = "click to edit"
+      document.getElementById('amShiftHP2').innerHTML = "add shift start"
     }
 
     if (!pmShiftHP2) {
-      document.getElementById('pmShiftHP2').innerHTML = "click to edit"
+      document.getElementById('pmShiftHP2').innerHTML = "add shift end"
     }
+
+
+    const shiftSlotsStoredData = JSON.parse(localStorage.getItem('shiftSlotsHTMLArray'));
+
+    if (shiftSlotsStoredData) {
+      shiftSlotsStoredData.forEach(el => {
+
+        // console.log('EL: ', el);
+        // console.log(el.Id);
+        // console.log(slot);
+
+        const parser = new DOMParser().parseFromString(el.newEmployeeElement, 'text/html');
+
+        const parsedNewEmployeeEl = parser.firstChild.innerHTML;
+        // console.log('parsedNewEmployeeEl: ', parsedNewEmployeeEl);
+
+        const slot = document.getElementById(el.Id);
+
+        slot.innerHTML = parsedNewEmployeeEl;
+        slot.classList.add('droppedEmployee');
+
+        slot.addEventListener('dragend', () => {
+          const index = shiftSlotsStoredData.findIndex(item => item.outerHTML === slot.newEmployeeElement);
+          console.log(shiftSlotsStoredData);
+          console.log(index);
+
+          if (index !== -1) {
+            shiftSlotsHTMLArray.splice(index, 1);
+            localStorage.removeItem('shiftSlotsHTMLArray');
+            localStorage.setItem('shiftSlotsHTMLArray', JSON.stringify(shiftSlotsHTMLArray));
+          }
+          slot.remove();
+          location.reload();
+        });
+        
+      });
+    }
+    
 
     if (loadedEmployees) {
       this.employees = loadedEmployees.map(loadedEmployee => {
@@ -144,13 +186,35 @@ class EmployeeManager {
   }
 }
 
+
+class ShiftSlotManager {
+  constructor(target, slotId, slotElement, newEmployeeElement) {
+    this.target = target;
+    this.slotId = slotId;
+    this.slotElement = slotElement;
+    this.newEmployeeElement = newEmployeeElement;
+  }
+
+  handleDrop() {
+    const slotAndEmployee = {
+      slot: this.slotElement.outerHTML, // Serialize the HTML element to a string
+      newEmployeeElement: this.newEmployeeElement.outerHTML,
+      Id: this.slotId
+    }
+
+    shiftSlotsHTMLArray.push(slotAndEmployee);
+    localStorage.setItem('shiftSlotsHTMLArray', JSON.stringify(shiftSlotsHTMLArray));
+    
+  }
+}
+
+
 const employeeManager = new EmployeeManager();
 
+// Add employee button event listener 
 const employeeButton = document.querySelector('.addEmployeeButton').addEventListener('click', () => {
   employeeManager.addEmployee();
 });
-
-const weekDaysSlots = document.querySelectorAll('.weekDaySlot');
 
 // Load employee data from localStorage when the page loads
 window.addEventListener('load', () => {
@@ -158,6 +222,10 @@ window.addEventListener('load', () => {
 });
 
 // WeekdaySlot event listeners
+const weekDaysSlots = document.querySelectorAll('.weekDaySlot');
+
+const shiftSlotsHTMLArray = JSON.parse(localStorage.getItem('shiftSlotsHTMLArray')) || [];
+
 weekDaysSlots.forEach(slot => {
   slot.addEventListener('dragover', (e) => {
     e.preventDefault();
@@ -165,9 +233,7 @@ weekDaysSlots.forEach(slot => {
 
   slot.addEventListener('drop', (e) => {
     e.preventDefault();
-
-    const loadedEmployees = localStorage.getItem('employeesData');
-
+    
     const employeeId = e.dataTransfer.getData('text/plain');
     const employeeElement = document.getElementById(employeeId);
 
@@ -179,6 +245,9 @@ weekDaysSlots.forEach(slot => {
       newEmployeeElement.id = 'employee_' + employeeManager.counter;
       employeeManager.counter++;
 
+      const dataSlot = new ShiftSlotManager(slot.target, slot.id, slot, newEmployeeElement);
+      dataSlot.handleDrop();
+
       newEmployeeElement.addEventListener('dragstart', (e) => {
         e.dataTransfer.setData('text/plain', e.target.id);
       });
@@ -188,15 +257,16 @@ weekDaysSlots.forEach(slot => {
         newEmployeeElement.classList.add('droppedEmployee');
       }
 
+      // console.log(slot.childElementCount);
       slot.addEventListener('dragend', (e) => {
         newEmployeeElement.remove();
+        location.reload();
       });
     } 
   });
 });
 
 // Date/Note/shifts event listeners
-
 const dateOfWeek = document.getElementById('dateOfWeek');
 const extraInfo = document.getElementById('extraInfo');
 const amShiftHP1 = document.getElementById('amShiftHP1');
@@ -239,4 +309,3 @@ pmShiftHP2.addEventListener('click', () => {
   pmShiftHP2.innerText = shift;
   localStorage.setItem('pmShiftHP2', pmShiftHP2.innerHTML);
 });
-
