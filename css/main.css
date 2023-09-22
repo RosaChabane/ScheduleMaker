@@ -10,7 +10,6 @@ html {
 NAV 
 */
 
-
 .topNavBar {
     padding: 1%;
     margin-left: 1%;
@@ -19,7 +18,6 @@ NAV
     justify-content: space-between;
     padding-top: 1%;
 }
-
 
 /*
 CLEAR BUTTON
@@ -86,7 +84,6 @@ ADD EMPLOYEE BUTTON
     padding-top: 8px;
 }
 
-
 /*
 ENTIRE CONTAINER (everything exclduing nav bar)
 */
@@ -95,7 +92,6 @@ ENTIRE CONTAINER (everything exclduing nav bar)
     display: flex;
     padding: 0 2% 0 2%;
 }
-
 
 /*
 EMPLOYEE CONTAINER
@@ -107,7 +103,6 @@ EMPLOYEE CONTAINER
     width: 15%;
     overflow: scroll;
 }
-
 
 /* EMPLOYEE SLOT TOGGLE*/
 
@@ -165,7 +160,6 @@ table * {
     border: 3px solid black;
     text-align: center;
     vertical-align: middle;
-    font-weight: 400;
     font-size: 25px;
     font-weight: 500;
 }
@@ -213,10 +207,10 @@ td .employeeSlotToggle span {
     line-height: 2.0;
 }
 
-
 /*
 DROPPED EMPLOYEE
 */
+
 .droppedEmployee {
     line-height: 3.0;
 }

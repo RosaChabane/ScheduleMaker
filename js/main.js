@@ -115,7 +115,6 @@ class EmployeeManager {
       shiftSlotsStoredData.forEach(el => {
 
         const parser = new DOMParser().parseFromString(el.newEmployeeElement, 'text/html');
-
         const parsedNewEmployeeEl = parser.firstChild.innerHTML;
 
         const slot = document.getElementById(el.Id);
@@ -155,7 +154,7 @@ class EmployeeManager {
         employeeElement.addEventListener('dragstart', (e) => {
           e.dataTransfer.setData('text/plain', e.target.id);
         });
-        // Delete employee
+
         employeeElement.addEventListener('click', () => {
           const choice = confirm("Delete employee?");
 
@@ -190,7 +189,7 @@ class ShiftSlotManager {
 
   handleDrop() {
     const slotAndEmployee = {
-      slot: this.slotElement.outerHTML, // Serialize the HTML element to a string
+      slot: this.slotElement.outerHTML,
       newEmployeeElement: this.newEmployeeElement.outerHTML,
       Id: this.slotId
     }
@@ -219,7 +218,7 @@ const clearButton = document.querySelector('.clearButton').addEventListener('cli
 });
 
 
-// Load employee data from localStorage when the page loads
+// Load employee data from localStorage on page load
 window.addEventListener('load', () => {
   employeeManager.loadEmployeeData();
 });
@@ -261,7 +260,6 @@ weekDaysSlots.forEach(slot => {
         newEmployeeElement.classList.add('droppedEmployee');
       }
 
-      // console.log(slot.childElementCount);
       slot.addEventListener('dragend', (e) => {
         newEmployeeElement.remove();
         location.reload();
