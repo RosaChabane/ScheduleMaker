@@ -214,3 +214,27 @@ DROPPED EMPLOYEE
 .droppedEmployee {
     line-height: 3.0;
 }
+
+/*
+MEDIA QUERIES 
+*/
+
+@media screen and (max-width: 1000px) {
+    body {
+        transform: rotate(90deg);
+        overflow-x: hidden; 
+        width: 1000px;
+        height: 990px;
+        margin: 5% 0% 10% 5%;
+    }
+    .entireContainer {
+        width: 1780px;
+    }
+    .topNavBar {
+        width: 1780px;
+    }
+    .clearButton, .addEmployeeButton {
+        width: 230px;
+        color: black;
+    }
+}
